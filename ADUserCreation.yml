@@ -1,0 +1,28 @@
+- hosts: adhost
+  vars:
+    my_pass: "{{ lookup('password', '/dev/null/ length=12 chars=ascii_letters,digits,hexdigits,punctuation') }}"
+  vars_prompt:
+      - name: fname
+        prompt: "Enter First Name"
+        private: no
+      - name: lname
+        prompt: "Enter Last Name"
+        private: no
+  tasks:
+     - set_fact:
+        password: "{{ my_pass  }}"
+     - debug: var=password 
+     - name: copying script file to the target machine
+       win_copy:
+         src: ADUser.ps1
+         dest: F:\ansible\
+     - name: Executing powershell script on the target machine
+       win_shell: F:\ansible\ADUser.ps1 "{{ fname }}" "{{ lname }}"  "{{ password }}"
+       register: results
+     - debug: var=results.stdout
+     - name: Removing a script file from the target machine
+       win_file:
+         path: F:\ansible\ADUser.ps1
+         state: absent
+   
+
