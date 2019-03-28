@@ -1,0 +1,13 @@
+---
+- hosts: CentOs
+  remote_user: root
+  vars:
+   testpath: "{{ tpath }}"
+  tasks:
+   - name: directory creation
+     file:
+       path: /etc/{{ testpath }}
+       state: directory
+   - name: print output statement
+     debug:
+       msg: "Directory has been created in /etc/{{ testpath }}" 
